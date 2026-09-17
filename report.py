@@ -1,8 +1,11 @@
 """Formats and saves evaluation results, including per-test-case scores."""
 
 import csv
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
 from collections import defaultdict
 from typing import List, Dict, Any
+
 
 def generate_junit_xml(results: List[Dict[str, Any]], output_xml: str = "unit.xml") -> None:
     """Writes results in JUnit-style XML, for platforms that parse test
@@ -39,8 +42,6 @@ def generate_junit_xml(results: List[Dict[str, Any]], output_xml: str = "unit.xm
             },
         )
 
-        # Attach the 0-10 score as a JUnit property so it survives alongside
-        # the pass/fail verdict, for platforms that read <properties>.
         properties = ET.SubElement(testcase, "properties")
         ET.SubElement(
             properties,
@@ -61,7 +62,6 @@ def generate_junit_xml(results: List[Dict[str, Any]], output_xml: str = "unit.xm
             )
             failure.text = str(r.get("reason", ""))
 
-    # Pretty-print the XML so it's human-readable if opened directly.
     rough_string = ET.tostring(testsuite, encoding="utf-8")
     pretty = minidom.parseString(rough_string).toprettyxml(indent="  ")
 

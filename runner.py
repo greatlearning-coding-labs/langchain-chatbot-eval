@@ -116,6 +116,11 @@ def main():
         default="results.csv",
         help="Path to write the CSV report",
     )
+    parser.add_argument(
+        "--junit-output",
+        default="unit.xml",
+        help="Path to write the JUnit-style XML report (for platforms that parse test results as JUnit XML)",
+    )
     args = parser.parse_args()
 
     get_response = load_solution(args.solution)
